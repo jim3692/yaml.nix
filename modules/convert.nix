@@ -1,8 +1,11 @@
 { pkgs, command }:
-inputText:
-derivation {
+inputFile:
+let
+  bash = "${pkgs.bash}/bin/bash";
+  env = "${pkgs.coreutils}/bin/env";
+in derivation {
   name = "yaml-convert";
-  builder = "${pkgs.bash}/bin/bash";
-  args = [ "-c" "file=${builtins.toFile "input" inputText} ${command} >$out" ];
-  system = builtins.currentSystem;
+  builder = env;
+  args = [ "file=${inputFile}" bash "-c" "${command} >$out" ];
+  system = "x86_64-linux";
 }

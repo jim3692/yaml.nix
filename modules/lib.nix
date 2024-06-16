@@ -3,7 +3,7 @@
 let
   fromYaml = import ./convert.nix {
     inherit pkgs;
-    command = "${pkgs.yq-go}/bin/yq -p yaml -o json $file";
+    command = "${pkgs.yq-go}/bin/yq -p yaml -o json -I0 -M $file";
   };
 
   toYaml = import ./convert.nix {
@@ -12,6 +12,6 @@ let
   };
 
 in {
-  fromYaml = file: fromYaml (builtins.fromJSON (builtins.readFile file));
-  toYaml = attrSet: toYaml (builtins.toJSON attrSet);
+  fromYaml = file: builtins.fromJSON (builtins.readFile (fromYaml file));
+  toYaml = attrSet: toYaml (builtins.toFile "input" (builtins.toJSON attrSet));
 }
